@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Галерея | Общество Похитителей Журналов</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="banner">
+      <img src="banner.jpg" alt="Работы художника">
+    </div>
+    <div class="header-content">
+      <div class="logo">
+        <img src="logo.jpg" alt="Логотип" class="logo-image">
+        <h1>Общество Похитителей Журналов</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="gallery.html">Галерея</a></li>
+          <li><a href="news.html">Новости</a></li>
+          <li><a href="shop.html">Магазин</a></li>
+          <li><a href="contact.html">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="gallery">
+      <h2>Галерея работ</h2>
+      <div class="gallery-items" id="gallery-container">
+        <!-- Изображения будут загружаться динамически через GitHub API -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Модальное окно для просмотра изображений на весь экран -->
+  <div id="modal" class="modal">
+    <span id="close" class="close">&times;</span>
+    <img class="modal-content" id="modal-image">
+    <div id="caption"></div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 Общество Похитителей Журналов. Все права защищены.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
