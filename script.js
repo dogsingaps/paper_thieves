@@ -1,5 +1,5 @@
 // Получение данных с GitHub API
-fetch('https://api.github.com/repos/username/repository/contents/gallery.json')
+fetch('https://api.github.com/repos/dogsingaps/paper_thieves/contents/collages/gallery.json')
   .then(response => response.json())
   .then(data => {
     const galleryContainer = document.getElementById('gallery-container');
