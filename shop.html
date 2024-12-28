@@ -25,6 +25,59 @@
       background-color: #000000;
       color: #ffffff;
     }
+
+    .shop-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .shop-item {
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .shop-item img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .form-popup {
+      display: none;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .form-popup input,
+    .form-popup textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .form-popup button {
+      background-color: #2196F3;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .form-popup button:hover {
+      background-color: #1e88e5;
+    }
   </style>
 </head>
 <body>
@@ -52,28 +105,88 @@
   <main>
     <section class="shop">
       <h2>Магазин мерча</h2>
-      <div class="shop-items">
-        <div class="shop-item">
-          <img src="merch1.jpg" alt="плакат">
-          <h3>Быль</h3>
-          <p>Плакат "быль"</p>
-          <p>Цена: 500 руб.</p>
-          <a href="https://vk.com/market/product/plakat-byl-89502365-5763928" class="btn" target="_blank">Купить</a>
-        </div>
-        <div class="shop-item">
-          <img src="merch2.jpg" alt="важнее всего">
-          <h3>важнее всего</h3>
-          <p>открытка важнее всего</p>
-          <p>Цена: 150 руб.</p>
-          <a href="https://vk.com/market/product/otkrytka-vazhnee-vsego-89502365-5763878" class="btn" target="_blank">Купить</a>
-        </div>
-        <!-- Добавьте больше товаров по мере необходимости -->
+      <div class="shop-items" id="shop-items-container">
+        <!-- Товары будут загружаться динамически -->
       </div>
     </section>
   </main>
 
+  <!-- Форма для покупки -->
+  <div class="form-popup" id="order-form">
+    <h3>Форма для заказа</h3>
+    <form id="order-form-details">
+      <input type="text" id="name" placeholder="Имя" required>
+      <input type="text" id="surname" placeholder="Фамилия" required>
+      <input type="tel" id="phone" placeholder="Телефон" required>
+      <input type="email" id="email" placeholder="Электронная почта" required>
+      <textarea id="message" placeholder="Сообщение" required></textarea>
+      <button type="submit">Отправить заказ</button>
+    </form>
+  </div>
+
   <footer>
     <p>&copy; 2024 Общество Похитителей Журналов. Все права защищены.</p>
   </footer>
+
+  <script>
+    // Получение данных с GitHub API
+fetch('https://api.github.com/repos/dogsingaps/paper_thieves/contents/merch/merch.json')
+  .then(response => response.json())  // Получаем JSON в формате объекта
+  .then(data => {
+    const shopItemsContainer = document.getElementById('shop-items-container');
+    
+    // Декодируем контент (он приходит закодированным в Base64)
+    const merchData = JSON.parse(atob(data.content));  // Декодируем Base64 и парсим JSON
+    
+    // Отображаем товары в магазине
+    merchData.forEach(item => {
+      const itemElement = document.createElement('div');
+      itemElement.classList.add('shop-item');
+      
+      // Используем шаблон для отображения данных в HTML
+      itemElement.innerHTML = `
+        <img src="${item.image_url}" alt="${item.name}">
+        <h3>${item.name}</h3>
+        <p>${item.description}</p>
+        <p>Цена: ${item.price}</p>
+        <a href="javascript:void(0);" class="btn" onclick="openOrderForm('${item.name}', '${item.price}')">Купить</a>
+      `;
+      shopItemsContainer.appendChild(itemElement);
+    });
+  })
+  .catch(error => console.error('Error loading merch data:', error));
+
+    // Отправка данных через EmailJS
+function sendOrderEmail(productName, productPrice) {
+  const formPopup = document.getElementById('order-form');
+  const name = document.getElementById('name').value;
+  const surname = document.getElementById('surname').value;
+  const phone = document.getElementById('phone').value;
+  const email = document.getElementById('email').value;
+  const message = document.getElementById('message').value;
+
+  const orderDetails = {
+    productName: productName,
+    productPrice: productPrice,
+    name: name,
+    surname: surname,
+    phone: phone,
+    email: email,
+    message: message
+  };
+
+  // Используем public_key для отправки письма
+  emailjs.send('service_uome9g8', 'template_5ozvqvo', orderDetails, 'LBtY9BNf6Zh2d59dT')
+    .then((response) => {
+      console.log('Success:', response);
+      alert('Ваш заказ отправлен!');
+      formPopup.style.display = 'none';
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Ошибка при отправке заказа.');
+    });
+}
+  </script>
 </body>
 </html>
